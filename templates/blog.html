@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Build a Blog</h1>
+
+{% if method == GET %}
+    <form action='/blog'>
+        {% for title in blogs %}
+            <li>
+                <h1><a href='/blog'>{{title.name}}</a></h1>
+                <p>
+                {{body}}
+                </p>
+            </li>
+    </form>
+
+{% else %}
+    <form action='/blog' method=POST>
+        <h1>
+            {{Blog.title}}
+        </h1>
+        <p>
+            {{Blog.body}}
+        </p>
+    </form>
+
+{% endif %}
+
+
+{% endblock %}
