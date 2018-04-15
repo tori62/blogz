@@ -30,9 +30,16 @@ def new_blog_entry():
     else:
         return render_template('newpost.html')
 
+@app.route('/post')
+def single_post():
+    return render_template('post.html')
+
+
+
 @app.route('/blog')
 def blog_post():
-    return render_template('blog.html')
+    blogs = Blog.query.all()
+    return render_template('blog.html', blogs=blogs)
 
 
 if __name__ == '__main__':
