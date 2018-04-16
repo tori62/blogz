@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<form action="/single" method="POST">
+    <h3>{{blog_title}}</h3>
+    <P>
+        {{body}}
+    </P>
+</form>
+
+
+
+{% endblock %}

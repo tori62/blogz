@@ -26,19 +26,18 @@ def new_blog_entry():
         new_entry = Blog(new_title,new_post)
         db.session.add(new_entry)
         db.session.commit()
-        return render_template('blog.html',blog_title=new_title,body=new_post)
+        return render_template('single.html',blog_title=new_title,body=new_post)
     else:
         return render_template('newpost.html')
 
-@app.route('/post')
-def single_post():
-    return render_template('post.html')
-
+#@app.route('/single')
+#def single_post():
+    return render_template('single.html')
 
 
 @app.route('/blog')
 def blog_post():
-    blogs = Blog.query.all()
+    blogs = Blog.query.all() 
     return render_template('blog.html', blogs=blogs)
 
 

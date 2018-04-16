@@ -5,23 +5,13 @@
 <h1>Build a Blog</h1>
 
 {% for blog in blogs %}
-    <h3><a href='/newpost'>{{blog.title}}</a></h3>
+    <h3><a href='/single'>{{blog.title}}</a></h3>
     <p>{{blog.body}}</p>
 
 {% endfor %}
 </form>
 
-<form action="/blog" method="POST">
-    <h3>{{blog_title}}</h3>
-    <P>
-        {{body}}
-    </P>
-</form>
 
-<form action="/blog">
-
-
-</form> -->
 
 
 {% endblock %}
