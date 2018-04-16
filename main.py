@@ -26,11 +26,14 @@ def new_blog_entry():
         if new_title == "" or new_post == "":
             error = "Please enter additional information."
             return render_template('newpost.html',blog_title=new_title,body=new_post,error=error)
+
         else:
             new_entry = Blog(new_title,new_post)
             db.session.add(new_entry)
             db.session.commit()
-        return render_template('single.html',blog_title=new_title,body=new_post)
+#        return render_template('single.html',blog_title=new_title,body=new_post)
+        return redirect('/blog?id=' + str(new_entry.id))
+
     else:
         return render_template('newpost.html')
 
