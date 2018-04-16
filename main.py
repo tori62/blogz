@@ -23,19 +23,28 @@ def new_blog_entry():
         new_title = request.form['blog-title']
         new_post = request.form['body']
 
-        new_entry = Blog(new_title,new_post)
-        db.session.add(new_entry)
-        db.session.commit()
+        if new_title == "" or new_post == "":
+            error = "Please enter additional information."
+            return render_template('newpost.html',blog_title=new_title,body=new_post,error=error)
+        else:
+            new_entry = Blog(new_title,new_post)
+            db.session.add(new_entry)
+            db.session.commit()
         return render_template('single.html',blog_title=new_title,body=new_post)
     else:
         return render_template('newpost.html')
 
-
-
 @app.route('/blog')
 def blog_post():
-    blogs = Blog.query.all() 
-    return render_template('blog.html', blogs=blogs)
+    blog_id = request.args.get('id')
+    if not blog_id:
+        blogs = Blog.query.all()
+        return render_template('blog.html', blogs=blogs)
+    else:
+        blogs = Blog.query.get(blog_id)
+        title = blogs.title
+        post = blogs.body
+        return render_template('single.html',blog_title=title,body=post)
 
 
 if __name__ == '__main__':
