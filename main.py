@@ -30,9 +30,6 @@ def new_blog_entry():
     else:
         return render_template('newpost.html')
 
-#@app.route('/single')
-#def single_post():
-    return render_template('single.html')
 
 
 @app.route('/blog')
