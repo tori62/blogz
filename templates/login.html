@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<form action="/newpost" method="POST">
+
+    <p>
+    <label for="name" >Username
+    <input id="name" type="text" name="username" value='{{username}}'/>
+    <span class="error">{{name_error}}</span></label></p>
+
+    <p>
+    <label>Password
+    <input type="password" name="password" value='{{password}}' />
+    <span class="error">{{word_error}}</span></label></p>
+
+    <p>
+    <label>Verify Password    
+    <input type="password" name="verify_password" value='{{verify_password}}'/>
+    <span class="error">{{verify_error}}</span></label></p>
+
+    <input type="submit" value="Submit" />
+</form>
+
+
+{% endblock %}
