@@ -1,5 +1,6 @@
-from flask import Flask, request, redirect, render_template, session
+from flask import Flask, request, redirect, render_template, session, flash
 from flask_sqlalchemy import SQLAlchemy
+
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
@@ -30,9 +31,15 @@ class User(db.Model):
         self.username = username
         self.password = password
 
+@app.before_request
+def require_login():
+    not_allowed_routes = ['newpost']
+    if request.endpoint in not_allowed_routes and 'username' not in session:
+        return redirect('/login')
+
 # This route allows a writer to signup for access to post a blog.  
 
-@app.route("/signup", methods = ['POST', 'GET'])
+@app.route('/signup', methods = ['POST', 'GET'])
 def register():
     if request.method == 'POST':
         username = request.form['username']
@@ -99,12 +106,16 @@ def login():
             return render_template('login.html',username=username,verify_error = error )
         elif not user:
             username = ''
-            error = "Username does not exist"
+            error = "Username does not exist."
             return render_template('login.html', username=username, name_error = error)
         else:
-            return redirect('/newpost')
+            if user and user.password == password:
+                session['username'] = username
+                flash('Logged In')
+                return redirect('/newpost')  
+            else:
+                flash('User password is incorrect or user does not exist','error') 
 
-            
     return render_template('login.html')
 
 
@@ -112,38 +123,49 @@ def login():
 def new_blog_entry():
     if request.method == 'POST':
         new_title = request.form['blog-title']
-        new_post = request.form['body']
-        user = User.query.all()
-        author_id = user.id
-
-        if new_title == "" or new_post == "":
-            error = "Please enter additional information."
-            return render_template('newpost.html',blog_title=new_title,body=new_post,error=error)
-
+        if not new_title:
+            return render_template('newpost.html')
         else:
-            new_entry = Blog(new_title,new_post,author_id)
-            db.session.add(new_entry)
-            db.session.commit()
-#        return render_template('single.html',blog_title=new_title,body=new_post)
-        return redirect('/blog?id=' + str(new_entry.id))
+            new_post = request.form['body']
+            username = session['username']
+            users = User.query.filter_by(username=username).first()
+            author_id = users.id
+
+            if new_title == "" or new_post == "":
+                error = "Please enter additional information."
+                return render_template('newpost.html',blog_title=new_title,body=new_post,error=error)
+
+            else:
+                new_entry = Blog(new_title,new_post,author_id)
+                db.session.add(new_entry)
+                db.session.commit()
+                return redirect('/blog?id=' + str(new_entry.id))
 
     else:
         return render_template('newpost.html')
 
 
 
-@app.route('/blog')
+@app.route('/blog', methods=['POST','GET'])
 def blog_post():
     blog_id = request.args.get('id')
     if not blog_id:
         blogs = Blog.query.all()
-        return render_template('blog.html', blogs=blogs)
+        return render_template('blog.html', blogs = blogs)
     else:
         blogs = Blog.query.get(blog_id)
         title = blogs.title
         post = blogs.body
         return render_template('single.html',blog_title=title,body=post)
 
+
+@app.route('/logout', methods=['POST','GET'])
+def logout():
+    if session['username'] == '':
+        flash ('You are not logged in')
+    else:
+        del session['username']
+        return redirect('/blog')
 
 def not_valid(info):
     for i in info:
@@ -153,6 +175,13 @@ def not_valid(info):
             return True
         else:
             return False
+
+def get_logged_in_user():
+    user = User.query.filter_by(username = session['username']).first()
+    if not user:
+        return False
+    else:
+        return True
    
 
 if __name__ == '__main__':

@@ -2,7 +2,8 @@
 
 {% block content %}
 
-<form action="/login" method="POST">
+
+<form action="/login" method='POST'>
 
     <p>
     <label for="name" >Username
@@ -20,6 +21,10 @@
     <span class="error" style="color: red">{{verify_error}}</span></label></p>
 
     <input type="submit" value="Submit" />
+
+    <p>
+        <h4><a href='/signup'>Don't Have an Account?  Create one here!</a></h4>
+    </p>
 </form>
 
 

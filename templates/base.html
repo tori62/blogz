@@ -1,8 +1,20 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <h4><a href='/blog'>Main Blog Page</a>
-        <a href='/newpost'>Add a Blog Entry</a></h4>
+        <h4>
+            <a href='/'>Home</a>&emsp;
+            <a href='/blog'>Main Blog Page</a>&emsp;
+            <a href='/newpost'>Add a Blog Entry</a>&emsp;
+            <h5>
+                <p>
+                    <a href='/login'>Login</a>&emsp;
+                    <a href='/logout'>Logout</a>
+                </p>
+            </h5>
+
+        </h4>
+
+
         <style>
         h1 {
             text-align: center
@@ -11,7 +23,15 @@
         </style>
     </head>
     <body>
-
+        {% with messages = get_flashed_messages(with_categories=True) %}
+            <ul>
+                {% for category,message in messages %}
+                    <li class="{{category}}">{{message}}</li>
+                {% endfor %}
+            </ul>
+        {% endwith %}
+        
+        
         {% block content %}
         {% endblock %}
 
