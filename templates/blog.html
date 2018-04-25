@@ -7,7 +7,17 @@
 
 {% for blog in blogs %}
     <h3><a href="./blog?id={{blog.id}}">{{blog.title}}</a></h3>
-    <p>{{blog.body}}</p>
+    <p> 
+        {{blog.body}}
+    </p>
+        
+  
+    <p><h5> 
+        written by:&ensp;<a href="./?id={{blog.author.username}}">{{blog.author.username}}</a>
+    </p></h5>   
+          
+
+
 
 {% endfor %}
 </form>

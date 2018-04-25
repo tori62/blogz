@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<form action='/' method = 'POST'>
+<h1>Home Page for Users</h1>
+
+{% for user in user %}
+    <ul>
+    <li><a href="./?id={{user.id}}">{{user.username}}</a></li>
+    </ul>
+{% endfor %}
+</form>
+
+
+
+{% endblock %}

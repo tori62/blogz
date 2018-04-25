@@ -25,7 +25,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20))
     password = db.Column(db.String(20))
-    blogs = db.relationship('Blog', backref='author')
+    blog = db.relationship('Blog', backref='author')
 
     def __init__(self,username,password):
         self.username = username
@@ -33,14 +33,14 @@ class User(db.Model):
 
 @app.before_request
 def require_login():
-    not_allowed_routes = ['newpost']
-    if request.endpoint in not_allowed_routes and 'username' not in session:
+    allowed_routes = ['blog','signup','login','index']
+    if request.endpoint not in allowed_routes and 'username' not in session:
         return redirect('/login')
 
 # This route allows a writer to signup for access to post a blog.  
 
 @app.route('/signup', methods = ['POST', 'GET'])
-def register():
+def signup():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
@@ -120,7 +120,7 @@ def login():
 
 
 @app.route('/newpost', methods=['POST','GET'])
-def new_blog_entry():
+def newpost():
     if request.method == 'POST':
         new_title = request.form['blog-title']
         if not new_title:
@@ -144,10 +144,13 @@ def new_blog_entry():
     else:
         return render_template('newpost.html')
 
-
+@app.route('/')
+def index():
+    user = User.query.all()
+    return render_template('index.html', user = user)
 
 @app.route('/blog', methods=['POST','GET'])
-def blog_post():
+def blog():
     blog_id = request.args.get('id')
     if not blog_id:
         blogs = Blog.query.all()
@@ -156,7 +159,10 @@ def blog_post():
         blogs = Blog.query.get(blog_id)
         title = blogs.title
         post = blogs.body
-        return render_template('single.html',blog_title=title,body=post)
+        author_id = blogs.author_id
+        author = User.query.get(author_id)
+        name = author.username
+        return render_template('single.html',blog_title=title,body=post, username = name)
 
 
 @app.route('/logout', methods=['POST','GET'])
@@ -176,12 +182,7 @@ def not_valid(info):
         else:
             return False
 
-def get_logged_in_user():
-    user = User.query.filter_by(username = session['username']).first()
-    if not user:
-        return False
-    else:
-        return True
+
    
 
 if __name__ == '__main__':
