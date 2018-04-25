@@ -78,7 +78,7 @@ def signup():
             db.session.add(new_user)
             db.session.commit()
             session['username'] = username
-            return redirect('/blog')
+            return redirect('/newpost')
         else:
             error = "That username already exists.  Please enter another username."
             password = ''
@@ -146,8 +146,13 @@ def newpost():
 
 @app.route('/')
 def index():
-    user = User.query.all()
-    return render_template('index.html', user = user)
+    user_id = request.args.get('id')
+    if not user_id:
+        user1 = User.query.all()
+        return render_template('index.html', user = user1)
+    else:
+        blogs = Blog.query.filter_by(author_id = user_id).all()
+        return render_template('user.html', blogs = blogs)
 
 @app.route('/blog', methods=['POST','GET'])
 def blog():
@@ -162,7 +167,7 @@ def blog():
         author_id = blogs.author_id
         author = User.query.get(author_id)
         name = author.username
-        return render_template('single.html',blog_title=title,body=post, username = name)
+        return render_template('single.html',blog_title=title,body=post, username = name, author_id = author_id)
 
 
 @app.route('/logout', methods=['POST','GET'])

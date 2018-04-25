@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<form action='/' method = 'POST'>
+<h1>Blog Post from Your Favorite Author</h1>
+
+        {% for blogs in blogs %}
+        <h3><a href="./blog?id={{blogs.id}}">{{blogs.title}}</a></h3>
+        <p> 
+            {{blogs.body}}
+        </p>
+        
+
+{% endfor %}
+</form>
+
+
+
+{% endblock %}
